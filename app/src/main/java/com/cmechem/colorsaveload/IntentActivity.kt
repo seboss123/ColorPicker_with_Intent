@@ -1,15 +1,16 @@
 package com.cmechem.colorsaveload
 
 import android.app.Activity
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.SeekBar
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_intent.*
-import android.graphics.Color
+import java.io.File
 
 
 class IntentActivity : AppCompatActivity() {
@@ -17,7 +18,7 @@ class IntentActivity : AppCompatActivity() {
     var greenVal = 127
     var blueVal = 127
     var alpha = 255
-    var colorName = ""
+    private var colorName = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,6 +75,7 @@ class IntentActivity : AppCompatActivity() {
 
 
     }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.intenttoolbarmenu, menu)
@@ -85,24 +87,47 @@ class IntentActivity : AppCompatActivity() {
             R.id.loadButton -> {
                 addfragment()
             }
+
+            R.id.saveButton -> {
+                redVal = redSeekBar.progress
+                greenVal = greenSeekBar.progress
+                blueVal = blueSeekBar.progress
+                val colorTextView = findViewById<TextView>(R.id.colorName2)
+                colorName = colorTextView.text.toString()
+                saveText("$colorName,$redVal,$greenVal,$blueVal\n")
+                return true
+            }
         }
-            return super.onOptionsItemSelected(item)
+        return super.onOptionsItemSelected(item)
     }
 
-    fun addfragment() {
+    private fun saveText(text: String) {
+        val path = filesDir
+        val letDirectory = File(path, "LET")
+        letDirectory.mkdirs()
+        val file = File(letDirectory, "Colors.txt")
+
+        file.appendText(text)
+
+    }
+
+    private fun addfragment() {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        val fragment = fragmentMain()
+        val fragment = FragmentMain()
 
         fragmentTransaction.replace(R.id.fragmentView, fragment)
         fragmentTransaction.commit()
 
     }
 
-    fun finishIntent(view:View){
-        val intent= intent
-        intent.putExtra("Color","Red")
-        setResult(Activity.RESULT_OK,intent)
+    fun finishIntent(view: View) {
+        val intent = intent
+        intent.putExtra("Red", redVal)
+        intent.putExtra("Green", greenVal)
+        intent.putExtra("Blue", blueVal)
+
+        setResult(Activity.RESULT_OK, intent)
         finish()
     }
 }

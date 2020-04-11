@@ -1,12 +1,12 @@
 package com.cmechem.colorsaveload
 
-import android.content.Intent
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
+import android.widget.SeekBar
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_main.*
@@ -18,27 +18,18 @@ data class Color(val colorName: String, val red: String, val green: String, val 
     Serializable
 
 
-class fragmentMain : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-    var colorData = mutableListOf<Color>()
+class FragmentMain : Fragment() {
+    private var colorData = mutableListOf<Color>()
 
 
-    fun log(value: String) {
-        Log.e("Test", value)
-    }
-
-    fun createDate(colors: List<String>) {
+    private fun createDate(colors: List<String>) {
         colorData = mutableListOf()
 
         for (data in colors) {
-            var splitData = data.split(",")
+            val splitData = data.split(",")
             colorData.add(Color(splitData[0], splitData[1], splitData[2], splitData[3]))
 
         }
-        Log.e("Color list", colorData.toString())
-
 
     }
 
@@ -52,11 +43,6 @@ class fragmentMain : Fragment() {
         if (file.exists()) {
             val inputAsString = file.readLines()
             createDate(inputAsString)
-            log(inputAsString.size.toString())
-            if (inputAsString.isNotEmpty()) {
-                Log.e("Text File", inputAsString[inputAsString.size - 1])
-            }
-            Log.e("This is a test", "test")
 
         }
 
@@ -71,6 +57,7 @@ class fragmentMain : Fragment() {
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // RecyclerView node initialized here
@@ -86,26 +73,31 @@ class fragmentMain : Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     fun testFun(view: View, color: Color) {
-        Log.e("ZZZZZZZZZZZ", color.toString())
-        val intent = Intent(view.context, MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-        val bundle = bundleOf(
-            "colorName" to color.colorName,
-            "red" to color.red,
-            "green" to color.green,
-            "blue" to color.blue
+        if (activity != null) {
+            val showColor = activity?.findViewById<View>(R.id.showColor)
+            val redSeek = activity?.findViewById<SeekBar>(R.id.redSeekBar)
+            val greenSeek = activity?.findViewById<SeekBar>(R.id.greenSeekBar)
+            val blueSeek = activity?.findViewById<SeekBar>(R.id.blueSeekBar)
+            showColor?.setBackgroundColor(
+                android.graphics.Color.rgb(
+                    color.red.toInt(),
+                    color.green.toInt(),
+                    color.blue.toInt()
+                )
+            )
+            redSeek?.setProgress(color.red.toInt(), true)
+            greenSeek?.setProgress(color.green.toInt(), true)
+            blueSeek?.setProgress(color.blue.toInt(), true)
 
-        )
-        intent.putExtras(bundle)
-        Log.e("ZZZZZZZZZZZ", bundle.toString())
+        }
 
-        view.context.startActivity(intent)
     }
 
 
     companion object {
-        fun newInstance(): fragmentMain = fragmentMain()
+        fun newInstance(): FragmentMain = FragmentMain()
     }
 
 }

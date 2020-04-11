@@ -6,6 +6,24 @@
     android:layout_height="match_parent"
     tools:context=".IntentActivity">
 
+    <EditText
+        android:id="@+id/colorName2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="108dp"
+        android:layout_marginLeft="108dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="90dp"
+        android:layout_marginRight="90dp"
+        android:layout_marginBottom="11dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Color Name"
+        app:layout_constraintBottom_toTopOf="@+id/redSeekBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/showColor" />
+
     <View
         android:id="@+id/showColor"
         android:layout_width="0dp"
@@ -173,7 +191,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:onClick="finishIntent"
-        android:text="Go Back"
+        android:text="Select Color"
         app:layout_constraintBottom_toTopOf="@+id/fragmentView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -2,7 +2,6 @@ package com.cmechem.colorsaveload
 
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -19,8 +18,7 @@ class MainActivity : AppCompatActivity() {
     var greenVal = 127
     var blueVal = 127
     var alpha = 255
-    var colorName = ""
-    val fileName = "TestFile"
+    private var colorName = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,10 +30,6 @@ class MainActivity : AppCompatActivity() {
         val colorName = findViewById<TextView>(R.id.colorName)
         val showColor = findViewById<View>(R.id.showColor)
         setSupportActionBar(findViewById(R.id.my_toolbar))
-//        supportActionBar!!.setDisplayShowHomeEnabled(true)
-//
-//        supportActionBar!!.setLogo(R.mipmap.ic_launcher)
-//        supportActionBar!!.setDisplayUseLogoEnabled(true)
 
         val color = intent?.extras
         if (color != null) {
@@ -44,13 +38,12 @@ class MainActivity : AppCompatActivity() {
             val green = color.getString("green")
             val blue = color.getString("blue")
 
-            Log.e("Intent", name.toString())
             colorName.text = name
             if (red != null) redSeek.progress = red.toInt()
             if (green != null) greenSeek.progress = green.toInt()
             if (blue != null && green != null && red != null) {
                 blueSeek.progress = blue.toInt()
-            showColor.setBackgroundColor(Color.rgb(red.toInt(), green.toInt(), blue.toInt()))
+                showColor.setBackgroundColor(Color.rgb(red.toInt(), green.toInt(), blue.toInt()))
             }
             redValue.text = red
             greenValue.text = green
@@ -115,17 +108,17 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    fun addfragment() {
+    private fun addfragment() {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        val fragment = fragmentMain()
+        val fragment = FragmentMain()
 
         fragmentTransaction.replace(R.id.fragmentView, fragment)
         fragmentTransaction.commit()
 
     }
 
-    fun saveText(text: String) {
+    private fun saveText(text: String) {
         val path = filesDir
         val letDirectory = File(path, "LET")
         letDirectory.mkdirs()
@@ -145,8 +138,7 @@ class MainActivity : AppCompatActivity() {
                 blueVal = blueSeekBar.progress
                 val colorTextView = findViewById<TextView>(R.id.colorName)
                 colorName = colorTextView.text.toString()
-                saveText(colorName + "," + redVal + "," + greenVal + "," + blueVal + "\n")
-                Log.e("It worked!!", colorName + " " + redVal + " " + greenVal + " " + blueVal)
+                saveText("$colorName,$redVal,$greenVal,$blueVal\n")
                 return true
             }
             R.id.loadButton -> {
